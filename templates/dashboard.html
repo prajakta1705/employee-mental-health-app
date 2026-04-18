@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>HR Dashboard</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f6f8;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .card {
+            width: 550px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0px 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .percent {
+            font-size: 45px;
+            color: #e74c3c;
+        }
+
+        .stats {
+            margin-top: 20px;
+        }
+
+        .stats div {
+            margin: 5px;
+        }
+
+        .insights {
+            text-align: left;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="card">
+    <h2>Employee Mental Health Insights</h2>
+
+    <div class="percent">
+        {{percent}}%
+    </div>
+
+    <p>Employees may need support</p>
+
+    <div class="stats">
+        <div>Total Responses: {{total}}</div>
+        <div>Need Support: {{need_help}}</div>
+        <div>No Support Needed: {{no_help}}</div>
+    </div>
+
+    <canvas id="pieChart"></canvas>
+
+    <h3>Work Interference Analysis</h3>
+    <canvas id="workChart"></canvas>
+
+    <!-- 🔥 INSIGHTS -->
+    <div class="insights">
+        <h3>Key Insights</h3>
+
+        <p>👉 {{work_percent}}% employees have high work stress</p>
+        <p>👉 {{family_percent}}% employees have family mental health history</p>
+        <p>👉 {{benefits_percent}}% employees are not aware of benefits</p>
+    </div>
+
+    <!-- 🔥 RECOMMENDATIONS -->
+    <div class="insights">
+        <h3>Recommendations</h3>
+
+        <ul>
+            <li>✔ Reduce workload for employees</li>
+            <li>✔ Conduct mental health awareness sessions</li>
+            <li>✔ Improve company benefits communication</li>
+            <li>✔ Encourage work-life balance</li>
+        </ul>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+// PIE CHART
+new Chart(document.getElementById('pieChart'), {
+    type: 'pie',
+    data: {
+        labels: ['Need Support', 'No Support'],
+        datasets: [{
+            data: [{{need_help}}, {{no_help}}],
+            backgroundColor: ['#e74c3c', '#2ecc71']
+        }]
+    }
+});
+
+// BAR CHART
+var workData = {{ data|tojson }};
+var counts = [0,0,0,0];
+
+workData.forEach(function(d){
+    counts[d[3]] += 1;
+});
+
+new Chart(document.getElementById('workChart'), {
+    type: 'bar',
+    data: {
+        labels: ['Never','Rarely','Sometimes','Often'],
+        datasets: [{
+            label: 'Work Interference',
+            data: counts,
+            backgroundColor: '#667eea'
+        }]
+    }
+});
+</script>
+
+</body>
+</html>
